@@ -19,6 +19,11 @@ const client = new MongoClient(uri, {
   },
 });
 
+const logger =  (req, res, next) => {
+      console.log(req.params);
+      next();
+    }
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -34,14 +39,15 @@ async function run() {
       res.send(result);
     })
 
-    app.get("/cars/:carId", async (req, res) => {
-      // const carId = req.params.carId;
-      const {carId} = req.params;
+    app.get("/cars/:carId", logger,  async (req, res) => {
+        // const carId = req.params.carId;
+        const { carId } = req.params;
 
-      const query  = {_id: new ObjectId(carId)}
-      const result = await carsCollection.findOne(query);
-      res.send(result);
-    });
+        const query = { _id: new ObjectId(carId) };
+        const result = await carsCollection.findOne(query);
+        res.send(result);
+      },
+    );
 
 
     console.log(
